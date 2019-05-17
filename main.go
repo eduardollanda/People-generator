@@ -20,20 +20,21 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	var option int64
-	tpl, _ := template.ParseFiles("index.html")
+	tpl, _ := template.ParseFiles("Front/index.html")
 	w.WriteHeader(http.StatusOK)
-
 	tpl.Execute(w, option)
 }
 func homempage(w http.ResponseWriter, r *http.Request) {
 
 	homem, _ := genereteName()
 	cpf := gerarCpf()
+	rg := gerarRG()
 
-	tpl, _ := template.ParseFiles("gerador.html")
+	tpl, _ := template.ParseFiles("Front/gerador.html")
 	data := map[string]string{
 		"Nome": homem,
 		"CPF":  cpf,
+		"RG":   rg,
 	}
 	w.WriteHeader(http.StatusOK)
 	tpl.Execute(w, data)
@@ -44,10 +45,12 @@ func mulherpage(w http.ResponseWriter, r *http.Request) {
 
 	_, mulher := genereteName()
 	cpf := gerarCpf()
-	tpl, _ := template.ParseFiles("gerador.html")
+	rg := gerarRG()
+	tpl, _ := template.ParseFiles("Front/gerador.html")
 	data := map[string]string{
 		"Nome": mulher,
 		"CPF":  cpf,
+		"RG":   rg,
 	}
 	w.WriteHeader(http.StatusOK)
 	tpl.Execute(w, data)
@@ -133,4 +136,47 @@ func gerarCpf() string {
 	}
 	return cpfToString
 
+}
+
+func gerarRG() string {
+	var (
+		rg             []int
+		primeiraSoma   int
+		primeiroDigito int
+		subtraendo     int
+		rgToString     string
+	)
+
+	for cont1 := 0; cont1 < 8; cont1++ {
+		aleatorio := rand.Intn(10)
+		rg = append(rg, aleatorio)
+	}
+	// calculo retirado de https://www.ngmatematica.com/2014/02/como-determinar-o-digito-verificador-do.html
+	primeiraSoma = (rg[0] * 2) + (rg[1] * 3) + (rg[2] * 4) + (rg[3] * 5) + (rg[4] * 6) + (rg[5] * 7) + (rg[6] * 8) + (rg[7] * 9)
+
+	subtraendo = (primeiraSoma % 11)
+
+	primeiroDigito = (11 - subtraendo)
+
+	if primeiroDigito == 11 {
+		for elemento := range rg {
+			elementoToString := strconv.Itoa(rg[elemento])
+			rgToString = (rgToString + elementoToString)
+		}
+		primeiroDigito = 0
+		rgToString = (rgToString + strconv.Itoa(primeiroDigito))
+	} else if primeiroDigito == 10 {
+		for elemento := range rg {
+			elementoToString := strconv.Itoa(rg[elemento])
+			rgToString = (rgToString + elementoToString)
+		}
+		rgToString = (rgToString + "x")
+	} else {
+		for elemento := range rg {
+			elementoToString := strconv.Itoa(rg[elemento])
+			rgToString = (rgToString + elementoToString)
+		}
+		rgToString = (rgToString + strconv.Itoa(primeiroDigito))
+	}
+	return rgToString
 }
