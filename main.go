@@ -2,27 +2,47 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	"math/rand" // Para gerar numeros aleatorios
+	"net/http"
+	"strconv"
+	"text/template"
 )
 
 func main() {
 
-	var (
-		sexoEscoliho int
-	)
+	http.HandleFunc("/mulher", mulherpage)
+	http.HandleFunc("/homem", homempage)
+	fmt.Println("Server is up and listening on port 8080.")
+	http.ListenAndServe(":8080", nil)
 
-	fmt.Println("Homem ou mulher ? \n homem = 1\n mulher = 2")
-	fmt.Scan(&sexoEscoliho)
+}
 
-	homem, mulher := genereteName()
+func homempage(w http.ResponseWriter, r *http.Request) {
 
-	if sexoEscoliho == 1 {
-		fmt.Println("Nome: " + homem)
+	homem, _ := genereteName()
+	cpf := gerarCpf()
 
-	} else if sexoEscoliho == 2 {
-		fmt.Println("Nome: " + mulher)
-		gerarCpf()
+	tpl, _ := template.ParseFiles("mulher.html")
+	data := map[string]string{
+		"Nome": homem,
+		"CPF":  cpf,
 	}
+	w.WriteHeader(http.StatusOK)
+	tpl.Execute(w, data)
+
+}
+
+func mulherpage(w http.ResponseWriter, r *http.Request) {
+
+	_, mulher := genereteName()
+	cpf := gerarCpf()
+	tpl, _ := template.ParseFiles("mulher.html")
+	data := map[string]string{
+		"Nome": mulher,
+		"CPF":  cpf,
+	}
+	w.WriteHeader(http.StatusOK)
+	tpl.Execute(w, data)
 
 }
 
@@ -61,7 +81,7 @@ func genereteName() (homem, mulher string) {
 	return completeNameMan, completeNamewoman
 }
 
-func gerarCpf() {
+func gerarCpf() string {
 
 	var (
 		cpf            []int
@@ -69,6 +89,7 @@ func gerarCpf() {
 		primeiroDigito int
 		segundaSoma    int
 		segundoDigito  int
+		cpfToString    string
 	)
 
 	//criando os 9 primeiros digitos do cpf
@@ -97,5 +118,10 @@ func gerarCpf() {
 	}
 
 	cpf = append(cpf, segundoDigito)
-	fmt.Println("CPF: ", cpf)
+
+	for elemento := range cpf {
+		cpfToString = cpfToString + strconv.Itoa(elemento)
+	}
+	return cpfToString
+
 }
