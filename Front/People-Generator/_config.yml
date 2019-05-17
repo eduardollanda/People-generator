@@ -16,7 +16,7 @@
 title: People Generator
 email: guganeriss@gmail.com
 description: >- # Gerador de Pessoas com Nome, sobrenome, CPF, e RG"  
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/generator" # the subpath of your site, e.g. /blog
 url: "http://people-generator.com.br"  
 twitter_username: P.Generator
 github_username:  P.Generator
@@ -24,6 +24,8 @@ github_username:  P.Generator
 # Build settings
 markdown: kramdown
 theme: minima
+#permalink: /generator/:title
+
 plugins:
   - jekyll-feed
 
