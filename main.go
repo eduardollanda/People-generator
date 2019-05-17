@@ -57,31 +57,34 @@ func mulherpage(w http.ResponseWriter, r *http.Request) {
 func genereteName() (homem, mulher string) {
 
 	firstNameMan := [...]string{
-		"Eduardo",
 		"Cayo",
+		"Eduardo",
+		"Geriston",
 		"Gustavo",
 		"Igor",
-		"Matheus",
 		"Mateus",
+		"Matheus",
 	}
 	firstNamewoman := [...]string{
-		"Lígia",
-		"Ellen",
-		"karol",
-		"Joaquina",
-		"Fernanda",
 		"Ana paula",
+		"Ellen",
+		"Fernanda",
+		"Joaquina",
+		"Lígia",
+		"karol",
 	}
 	lastName := [...]string{
-		"Silva",
-		"Santos",
-		"Oliveira",
-		"Souza",
-		"Lima",
-		"Pereira",
-		"Ferreira",
 		"Costa",
+		"Ferreira",
+		"Lima",
+		"Melo",
+		"Oliveira",
+		"Pereira",
 		"Rodrigues",
+		"Santos",
+		"Silva",
+		"Sousa",
+		"Souza",			
 	}
 	completeNameMan := (firstNameMan[rand.Intn(len(firstNameMan))] + " " + lastName[rand.Intn(len(lastName))])
 	completeNamewoman := (firstNamewoman[rand.Intn(len(firstNamewoman))] + " " + lastName[rand.Intn(len(lastName))])
