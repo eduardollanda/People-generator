@@ -6,10 +6,23 @@ import (
 )
 
 func main() {
-	fmt.Println(genereteName())
+
+	var sexoEscoliho int
+	fmt.Println("Homem ou mulher ? \n homem = 1\n mulher = 2")
+	fmt.Scan(&sexoEscoliho)
+
+	homem, mulher := genereteName()
+
+	if sexoEscoliho == 1 {
+		fmt.Println(homem)
+
+	} else if sexoEscoliho == 2 {
+		fmt.Println(mulher)
+	}
+
 }
 
-func genereteName() (string, string) {
+func genereteName() (homem, mulher string) {
 
 	firstNameMan := [...]string{
 		"Eduardo",
@@ -27,6 +40,19 @@ func genereteName() (string, string) {
 		"Fernanda",
 		"Ana paula",
 	}
+	lastName := [...]string{
+		"Silva",
+		"Santos",
+		"Oliveira",
+		"Souza",
+		"Lima",
+		"Pereira",
+		"Ferreira",
+		"Costa",
+		"Rodrigues",
+	}
+	completeNameMan := (firstNameMan[rand.Intn(len(firstNameMan))] + " " + lastName[rand.Intn(len(lastName))])
+	completeNamewoman := (firstNamewoman[rand.Intn(len(firstNamewoman))] + " " + lastName[rand.Intn(len(lastName))])
 
-	return firstNameMan[rand.Intn(len(firstNameMan))], firstNamewoman[rand.Intn(len(firstNamewoman))]
+	return completeNameMan, completeNamewoman
 }
