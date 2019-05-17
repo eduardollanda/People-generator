@@ -120,7 +120,8 @@ func gerarCpf() string {
 	cpf = append(cpf, segundoDigito)
 
 	for elemento := range cpf {
-		cpfToString = cpfToString + strconv.Itoa(elemento)
+		elementoToString := strconv.Itoa(cpf[elemento])
+		cpfToString = (cpfToString + elementoToString)
 	}
 	return cpfToString
 
