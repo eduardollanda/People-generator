@@ -7,19 +7,21 @@ import (
 
 func main() {
 
-	gerarCpf()
+	var (
+		sexoEscoliho int
+	)
 
-	var sexoEscoliho int
 	fmt.Println("Homem ou mulher ? \n homem = 1\n mulher = 2")
 	fmt.Scan(&sexoEscoliho)
 
 	homem, mulher := genereteName()
 
 	if sexoEscoliho == 1 {
-		fmt.Println(homem)
+		fmt.Println("Nome: " + homem)
 
 	} else if sexoEscoliho == 2 {
-		fmt.Println(mulher)
+		fmt.Println("Nome: " + mulher)
+		gerarCpf()
 	}
 
 }
@@ -95,9 +97,5 @@ func gerarCpf() {
 	}
 
 	cpf = append(cpf, segundoDigito)
-
-	fmt.Println(primeiraSoma % 11)
-	fmt.Println(segundoDigito)
-	fmt.Println(cpf)
-
+	fmt.Println("CPF: ", cpf)
 }
