@@ -10,6 +10,7 @@ import (
 
 func main() {
 
+	http.HandleFunc("/", index)
 	http.HandleFunc("/mulher", mulherpage)
 	http.HandleFunc("/homem", homempage)
 	fmt.Println("Server is up and listening on port 8080.")
@@ -17,12 +18,19 @@ func main() {
 
 }
 
+func index(w http.ResponseWriter, r *http.Request) {
+	var option int64
+	tpl, _ := template.ParseFiles("index.html")
+	w.WriteHeader(http.StatusOK)
+
+	tpl.Execute(w, option)
+}
 func homempage(w http.ResponseWriter, r *http.Request) {
 
 	homem, _ := genereteName()
 	cpf := gerarCpf()
 
-	tpl, _ := template.ParseFiles("mulher.html")
+	tpl, _ := template.ParseFiles("gerador.html")
 	data := map[string]string{
 		"Nome": homem,
 		"CPF":  cpf,
@@ -36,7 +44,7 @@ func mulherpage(w http.ResponseWriter, r *http.Request) {
 
 	_, mulher := genereteName()
 	cpf := gerarCpf()
-	tpl, _ := template.ParseFiles("mulher.html")
+	tpl, _ := template.ParseFiles("gerador.html")
 	data := map[string]string{
 		"Nome": mulher,
 		"CPF":  cpf,
