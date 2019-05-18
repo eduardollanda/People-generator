@@ -1,93 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"math/rand" // Para gerar numeros aleatorios
-	"net/http"
+	"database/sql" // Pacote Database SQL para realizar Query
+	"log"          // Mostra mensagens no console
+	"math/rand"
+	"net/http" // Gerencia URLs e Servidor Web
 	"strconv"
-	"text/template"
+	"text/template" // Gerencia templates
+
+	_ "github.com/go-sql-driver/mysql" // Driver Mysql para Go
 )
-
-func main() {
-
-	http.HandleFunc("/", index)
-	http.HandleFunc("/mulher", mulherpage)
-	http.HandleFunc("/homem", homempage)
-	fmt.Println("Server is up and listening on port 8080.")
-	http.ListenAndServe(":8080", nil)
-
-}
-
-func index(w http.ResponseWriter, r *http.Request) {
-	var option int64
-	tpl, _ := template.ParseFiles("index.html")
-	w.WriteHeader(http.StatusOK)
-
-	tpl.Execute(w, option)
-}
-func homempage(w http.ResponseWriter, r *http.Request) {
-
-	homem, _ := genereteName()
-	cpf := gerarCpf()
-
-	tpl, _ := template.ParseFiles("gerador.html")
-	data := map[string]string{
-		"Nome": homem,
-		"CPF":  cpf,
-	}
-	w.WriteHeader(http.StatusOK)
-	tpl.Execute(w, data)
-
-}
-
-func mulherpage(w http.ResponseWriter, r *http.Request) {
-
-	_, mulher := genereteName()
-	cpf := gerarCpf()
-	tpl, _ := template.ParseFiles("gerador.html")
-	data := map[string]string{
-		"Nome": mulher,
-		"CPF":  cpf,
-	}
-	w.WriteHeader(http.StatusOK)
-	tpl.Execute(w, data)
-
-}
-
-func genereteName() (homem, mulher string) {
-
-	firstNameMan := [...]string{
-		"Eduardo",
-		"Cayo",
-		"Gustavo",
-		"Igor",
-		"Matheus",
-		"Mateus",
-	}
-	firstNamewoman := [...]string{
-		"Lígia",
-		"Ellen",
-		"karol",
-		"Joaquina",
-		"Fernanda",
-		"Ana paula",
-	}
-	lastName := [...]string{
-		"Silva",
-		"Santos",
-		"Oliveira",
-		"Souza",
-		"Lima",
-		"Pereira",
-		"Ferreira",
-		"Costa",
-		"Rodrigues",
-	}
-	completeNameMan := (firstNameMan[rand.Intn(len(firstNameMan))] + " " + lastName[rand.Intn(len(lastName))])
-	completeNamewoman := (firstNamewoman[rand.Intn(len(firstNamewoman))] + " " + lastName[rand.Intn(len(lastName))])
-
-	return completeNameMan, completeNamewoman
-}
 
 func gerarCpf() string {
 
@@ -133,4 +55,134 @@ func gerarCpf() string {
 	}
 	return cpfToString
 
+}
+
+type NamesMan struct {
+	IdM       int
+	FirstName string
+	LastName  string
+}
+
+type NamesWoman struct {
+	IdW       int
+	FirstName string
+	LastName  string
+}
+
+func dbConnMen() (db *sql.DB) {
+	dbDriver := "mysql"
+	dbUser := "root"
+	dbPass := "12345"
+	dbName := "plpInfo"
+
+	db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@/"+dbName)
+	if err != nil {
+		panic(err.Error())
+	}
+	return db
+}
+
+//var tmpl = template.Must(template.ParseFiles("tt.html"))
+
+func index(w http.ResponseWriter, r *http.Request) {
+	tpl, _ := template.ParseFiles("index.html")
+	data := map[string]string{
+		"Title": "Gerador :)",
+	}
+	w.WriteHeader(http.StatusOK)
+	tpl.Execute(w, data)
+}
+
+func showRndMan(w http.ResponseWriter, r *http.Request) {
+	db := dbConnMen()
+
+	selDB, err := db.Query("select FirstName from NamesMan order by rand() limit 1")
+	selDB1, err := db.Query("select LastName from NamesMan order by rand() limit 1")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	n := NamesMan{}
+
+	for selDB.Next() {
+		var firstName string
+
+		err = selDB.Scan(&firstName)
+
+		n.FirstName = firstName
+	}
+
+	for selDB1.Next() {
+		var lastName string
+
+		err = selDB1.Scan(&lastName)
+
+		n.LastName = lastName
+	}
+
+	tpl, _ := template.ParseFiles("gerador.html")
+	cpf := gerarCpf()
+	data := map[string]string{
+		"Nome":      n.FirstName,
+		"SobreNome": n.LastName,
+		"Cpf":       cpf,
+	}
+
+	w.WriteHeader(http.StatusOK)
+	tpl.Execute(w, data)
+
+	defer db.Close()
+}
+
+func showRndWoman(w http.ResponseWriter, r *http.Request) {
+	db := dbConnMen()
+
+	selDB, err := db.Query("select FirstName from NamesWoman order by rand() limit 1")
+	selDB1, err := db.Query("select LastName from NamesWoman order by rand() limit 1")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	n := NamesWoman{}
+
+	for selDB.Next() {
+		var firstName string
+
+		err = selDB.Scan(&firstName)
+
+		n.FirstName = firstName
+	}
+
+	for selDB1.Next() {
+		var lastName string
+
+		err = selDB1.Scan(&lastName)
+
+		n.LastName = lastName
+	}
+
+	tpl, _ := template.ParseFiles("gerador.html")
+	cpf := gerarCpf()
+	data := map[string]string{
+		"Nome":      n.FirstName,
+		"SobreNome": n.LastName,
+		"Cpf":       cpf,
+	}
+
+	w.WriteHeader(http.StatusOK)
+	tpl.Execute(w, data)
+
+	defer db.Close()
+}
+
+func main() {
+	log.Println("Server started on: http://localhost:8080")
+	http.HandleFunc("/showMan", showRndMan)
+	http.HandleFunc("/showWoman", showRndWoman)
+	http.HandleFunc("/", index)
+
+	// Inicia o servidor na porta 8080
+	http.ListenAndServe(":8080", nil)
 }
