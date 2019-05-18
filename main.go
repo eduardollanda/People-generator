@@ -93,10 +93,8 @@ func dbConnMen() (db *sql.DB) {
 	return db
 }
 
-//var tmpl = template.Must(template.ParseFiles("tt.html"))
-
 func index(w http.ResponseWriter, r *http.Request) {
-	tpl, _ := template.ParseFiles("index.html")
+	tpl, _ := template.ParseGlob("Front/index.html")
 	data := map[string]string{
 		"Title": "Gerador :)",
 	}
@@ -138,7 +136,7 @@ func showRndMan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Seta e executa template
-	tpl, _ := template.ParseFiles("gerador.html")
+	tpl, _ := template.ParseFiles("Front/gerador.html")
 	cpf := gerarCpf()
 	data := map[string]string{
 		"Nome":      n.FirstName,
@@ -188,7 +186,7 @@ func showRndWoman(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Seta e executa template
-	tpl, _ := template.ParseFiles("gerador.html")
+	tpl, _ := template.ParseFiles("Front/gerador.html")
 	cpf := gerarCpf()
 	data := map[string]string{
 		"Nome":      n.FirstName,
