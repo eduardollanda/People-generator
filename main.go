@@ -30,7 +30,7 @@ func homempage(w http.ResponseWriter, r *http.Request) {
 	cpf := gerarCpf()
 	rg := gerarRG()
 
-	tpl, _ := template.ParseFiles("Front/gerador.html")
+	tpl, _ := template.ParseFiles("Front/homem.html")
 	data := map[string]string{
 		"Nome": homem,
 		"CPF":  cpf,
@@ -46,7 +46,7 @@ func mulherpage(w http.ResponseWriter, r *http.Request) {
 	_, mulher := genereteName()
 	cpf := gerarCpf()
 	rg := gerarRG()
-	tpl, _ := template.ParseFiles("Front/gerador.html")
+	tpl, _ := template.ParseFiles("Front/mulher.html")
 	data := map[string]string{
 		"Nome": mulher,
 		"CPF":  cpf,
@@ -354,7 +354,7 @@ func genereteName() (homem, mulher string) {
 		"Vasconcelos",
 		"Veloso",
 		"Viera",
-		"Vilela",			
+		"Vilela",
 	}
 	completeNameMan := (firstNameMan[rand.Intn(len(firstNameMan))] + " " + lastName[rand.Intn(len(lastName))])
 	completeNamewoman := (firstNamewoman[rand.Intn(len(firstNamewoman))] + " " + lastName[rand.Intn(len(lastName))])
