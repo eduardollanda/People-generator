@@ -1,1 +1,1 @@
-“web: helloworld”
+“web: go run main.go”
